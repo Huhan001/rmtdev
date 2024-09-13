@@ -1,11 +1,18 @@
+import {useState} from "react";
+
 export default function SearchForm() {
+  const [searchText, setSearchText] = useState('')
+  const inputText = (event:React.ChangeEvent<HTMLInputElement>) => {setSearchText(event.target.value)} // function
+
   return (
-    <form action="#" className="search">
+    <form onSubmit={(event) => event.preventDefault()} action="#" className="search">
       <button type="submit">
         <i className="fa-solid fa-magnifying-glass"></i>
       </button>
 
       <input
+        value= {searchText}
+        onChange = {inputText}
         spellCheck="false"
         type="text"
         required
