@@ -62,7 +62,7 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
         if (!get().searchText) return; //kills application 🔥
         set({isLoading: true});
        return fetch(`${URL}?search=${get().searchText}`).
-            then(data => data.json()).then(data => set({fetchedData: data.jobItems, isLoading: false}));
+            then(data => data.json()).then(data => set({fetchedData: data.jobItems, isLoading: false})).catch(error => console.log(error));
     },
     // adding + is called unary operator that changes string to number +window.location.hash.substring(2)
     getwebJoblistId: () => set({webJoblistId: +window.location.hash.substring(4)}), 
