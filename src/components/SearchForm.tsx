@@ -1,8 +1,9 @@
-import {useState} from "react";
+import {LoadStore} from "../GeneralStore.tsx/Store.tsx";
 
 export default function SearchForm() {
-  const [searchText, setSearchText] = useState('')
-  const inputText = (event:React.ChangeEvent<HTMLInputElement>) => {setSearchText(event.target.value)} // function
+  const searchText = LoadStore(state => state.searchText)
+  const setSearchText = LoadStore(state => state.setSearchText)
+
 
   return (
     <form onSubmit={(event) => event.preventDefault()} action="#" className="search">
@@ -12,7 +13,7 @@ export default function SearchForm() {
 
       <input
         value= {searchText}
-        onChange = {inputText}
+        onChange = {setSearchText}
         spellCheck="false"
         type="text"
         required
