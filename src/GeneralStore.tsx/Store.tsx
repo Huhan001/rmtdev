@@ -1,5 +1,6 @@
 import {create} from "zustand";
 import React from "react";
+import { URL } from "../constant/sharedConstant";
 
 interface ApiData {
     badgeLetters: string;
@@ -60,7 +61,7 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
     fetchingData: () => {
         if (!get().searchText) return; //kills application 🔥
         set({isLoading: true});
-       return fetch(`https://bytegrad.com/course-assets/projects/rmtdev/api/data?search=${get().searchText}`).
+       return fetch(`${URL}?search=${get().searchText}`).
             then(data => data.json()).then(data => set({fetchedData: data.jobItems, isLoading: false}));
     },
     // adding + is called unary operator that changes string to number +window.location.hash.substring(2)
@@ -69,7 +70,7 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
         if (get().webJoblistId === 0) return //kills application 🔥
         set({isApiLoading: true})
         try {
-            const data = await fetch(`https://bytegrad.com/course-assets/projects/rmtdev/api/data/${get().webJoblistId}`);
+            const data = await fetch(`${URL}/${get().webJoblistId}`);
             if (!data.ok) {throw new Error('failed to fetch')} //kills application 🔥
             const dataid = await data.json();
             set({idApiFetchedData: dataid.jobItem, isApiLoading: false})
