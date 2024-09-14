@@ -14,10 +14,9 @@ export default function JobItemContent() {
     idApiFetching();
   },[idApiFetching, webJoblistId])
 
+  if(isApiLoading) {return <SpinnerRun />} // check the html and css to make sure the components conform to the set style.
 
-//  return <EmptyJobContent />
   return (
-    isApiLoading && <Spinner /> ||
     idApiFetchedData?.daysAgo ?
           <section className="job-details">
             <div>
@@ -125,4 +124,15 @@ function EmptyJobContent() {
       </div>
     </section>
   );
+}
+
+
+const SpinnerRun = () => {
+  return (
+    <section className= 'job-details'>
+      <div>
+        <Spinner />
+      </div>
+    </section>
+  )
 }

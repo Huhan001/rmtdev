@@ -22,6 +22,7 @@ export interface IdFetch extends ApiData {
     companyURL: string
 }
 
+// 📌 like protocal oriented programing
 interface LoadStoreTypes {
    searchText: string;
    setSearchText: (event:React.ChangeEvent<HTMLInputElement>) => void;
@@ -32,7 +33,7 @@ interface LoadStoreTypes {
    getwebJoblistId: () => void;
    idApiFetchedData: IdFetch | null;
    idApiFetching: () => Promise<void>;
-   isApiLoading:boolean
+   isApiLoading:boolean;
 }
 
 export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
