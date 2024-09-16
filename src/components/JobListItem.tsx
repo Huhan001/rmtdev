@@ -1,6 +1,6 @@
 import BookmarkIcon from "./BookmarkIcon";
 import {LoadStore} from "../GeneralStore.tsx/Store.tsx";
-import {useEffect} from "react";
+import {useEffect, useRef} from "react";
 
 export default function JobListItem() {
   const searchText = LoadStore(state => state.searchText);
@@ -10,8 +10,12 @@ export default function JobListItem() {
   const getwebJoblistId = LoadStore(state => state.getwebJoblistId)
   const webJoblistId = LoadStore(state => state.webJoblistId)
 
+  const debounceTimeOut = useRef<number | null>(null) // 👇🏾
 
-  useEffect(() =>{fetchingData()},[fetchingData, searchText]); // looks like you can have multiple useEffects in one component.
+  useEffect(() => {
+    debounceTimeOut.current = setTimeout(() => fetchingData(),600) // 600 milisecond
+    return () => {if(debounceTimeOut.current) {clearTimeout(debounceTimeOut.current)}} //clear debounce if there
+  },[fetchingData, searchText]); // looks like you can have multiple useEffects in one component.
 
   useEffect(() =>{
     getwebJoblistId(); // calling the event function so it mounts on page reload
