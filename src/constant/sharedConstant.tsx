@@ -1,1 +1,1 @@
-export const URL = 'https://bytegrad.com/course-assets/projects/rmtdev/api/data'
+export const webDomain: string = 'https://bytegrad.com/course-assets/projects/rmtdev/api/data'

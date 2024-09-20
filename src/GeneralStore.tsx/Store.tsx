@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import React from "react";
-import { URL } from "../constant/sharedConstant";
+import {webDomain} from "../constant/sharedConstant";
 
 export interface ApiData {
     badgeLetters: string;
@@ -26,57 +26,34 @@ export interface IdFetch extends ApiData {
 interface LoadStoreTypes {
    searchText: string;
    setSearchText: (event:React.ChangeEvent<HTMLInputElement>) => void;
-   fetchedData: ApiData[];
-   fetchingData: () => Promise<void> | undefined;
-   isLoading:boolean;
+   fetchingData: (search:string) => Promise<ApiData[]> | undefined;
    webJoblistId: number;
    getwebJoblistId: () => void;
-   idApiFetchedData: IdFetch | null;
-   idApiFetching: () => Promise<void>;
-   isApiLoading:boolean;
+   idApiFetching: (url:string) => Promise<IdFetch | null>;
+   debouncedSearch: string;
+   firstApiDataCount: number;
+   fetchedData: ApiData[] | null
 }
 
 export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
     searchText: '',
-    fetchedData: [],
     isLoading: false,
     webJoblistId: 0,
-    idApiFetchedData: {
-        badgeLetters: '',
-        company: '',
-        daysAgo: 0,
-        id: 0,
-        relevanceScore: 0,
-        title: '',
-        description: '',
-        qualifications: [],
-        reviews: [],
-        duration: '',
-        salary: '',
-        location: '',
-        coverImgURL: '',
-        companyURL: ''
-    },
-    isApiLoading:false,
+    debouncedSearch:"",
+    firstApiDataCount: 0,
+    fetchedData: null,
     setSearchText: (event:React.ChangeEvent<HTMLInputElement>) => set({searchText: event.target.value}),
-    fetchingData: () => {
+    fetchingData: (search:string) => {
         if (!get().searchText) return; //kills application 🔥
-        set({isLoading: true});
-       return fetch(`${URL}?search=${get().searchText}`).
-            then(data => data.json()).then(data => set({fetchedData: data.jobItems, isLoading: false}));
+       return fetch(`${webDomain}?search=${search}`).
+            then(data => data.json()).then(data => data.jobItems);
     },
     // adding + is called unary operator that changes string to number +window.location.hash.substring(2)
     getwebJoblistId: () => set({webJoblistId: +window.location.hash.substring(4)}), 
-    idApiFetching: async () => {
-        if (get().webJoblistId === 0) return //kills application 🔥
-        set({isApiLoading: true})
-        try {
-            const data = await fetch(`${URL}/${get().webJoblistId}`);
-            if (!data.ok) {throw new Error('failed to fetch')} //kills application 🔥
-            const dataid = await data.json();
-            set({idApiFetchedData: dataid.jobItem, isApiLoading: false})
-        } catch (error) {
-            console.log(error)
-        }
+    idApiFetching: async (url:string) => {
+            const data = await fetch(url);
+            const response =  await data.json();
+        return response.jobItem
     }
+
 }));

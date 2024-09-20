@@ -1,33 +1,31 @@
 import BookmarkIcon from "./BookmarkIcon";
 import {LoadStore} from "../GeneralStore.tsx/Store.tsx";
-import {useEffect} from "react";
 import Spinner from "./Spinner.tsx";
+import useSWR from "swr";
+import {webDomain} from "../constant/sharedConstant.tsx";
+
 
 export default function JobItemContent() {
   const webJoblistId = LoadStore(state => state.webJoblistId)
   const idApiFetching = LoadStore(state => state.idApiFetching)
-  const idApiFetchedData = LoadStore(state => state.idApiFetchedData)
-  const isApiLoading = LoadStore(state => state.isApiLoading)
+  const fetchedData = LoadStore(state => state.fetchedData)
 
 
-  useEffect(() => {
-    idApiFetching();
-  },[idApiFetching, webJoblistId])
+  const {data, isLoading} = useSWR(webJoblistId?`${webDomain}/${webJoblistId}`:null,idApiFetching)
 
-  if(isApiLoading) {return <SpinnerRun />} // check the html and css to make sure the components conform to the set style.
-
+  if(isLoading) {return <SpinnerRun />} // check the html and css to make sure the components conform to the set style.
   return (
-    idApiFetchedData?.daysAgo ?
+    fetchedData ?
           <section className="job-details">
             <div>
               <img
-                src= {idApiFetchedData?.coverImgURL}
+                src= {data?.coverImgURL}
                 alt="#"
               />
 
               <a
                 className="apply-btn"
-                href= {idApiFetchedData?.companyURL}
+                href= {data?.companyURL}
                 target="_blank"
               >
                 Apply
@@ -35,32 +33,32 @@ export default function JobItemContent() {
 
               <section className="job-info">
                 <div className="job-info__left">
-                  <div className="job-info__badge">{idApiFetchedData?.badgeLetters}</div>
+                  <div className="job-info__badge">{data?.badgeLetters}</div>
                   <div className="job-info__below-badge">
-                    <time className="job-info__time">{idApiFetchedData?.daysAgo}d</time>
+                    <time className="job-info__time">{data?.daysAgo}d</time>
 
                     <BookmarkIcon />
                   </div>
                 </div>
 
                 <div className="job-info__right">
-                  <h2 className="second-heading">{idApiFetchedData?.title}</h2>
-                  <p className="job-info__company">{idApiFetchedData?.company}</p>
+                  <h2 className="second-heading">{data?.title}</h2>
+                  <p className="job-info__company">{data?.company}</p>
                   <p className="job-info__description">
-                    {idApiFetchedData?.description}
+                    {data?.description}
                   </p>
                   <div className="job-info__extras">
                     <p className="job-info__extra">
                       <i className="fa-solid fa-clock job-info__extra-icon"></i>
-                      {idApiFetchedData?.duration}
+                      {data?.duration}
                     </p>
                     <p className="job-info__extra">
                       <i className="fa-solid fa-money-bill job-info__extra-icon"></i>
-                      {idApiFetchedData?.salary}
+                      {data?.salary}
                     </p>
                     <p className="job-info__extra">
                       <i className="fa-solid fa-location-dot job-info__extra-icon"></i>{" "}
-                      {idApiFetchedData?.location}
+                      {data?.location}
                     </p>
                   </div>
                 </div>
@@ -75,7 +73,7 @@ export default function JobItemContent() {
                     </p>
                   </div>
                   <ul className="qualifications__list">
-                    {idApiFetchedData?.qualifications.map((data,index) => <li key ={index} className="qualifications__item">{data}</li>)}
+                    {data?.qualifications.map((data,index) => <li key ={index} className="qualifications__item">{data}</li>)}
                     {/*<li className="qualifications__item">React</li>*/}
                     {/*<li className="qualifications__item">Next.js</li>*/}
                     {/*<li className="qualifications__item">Tailwind CSS</li>*/}
@@ -90,7 +88,7 @@ export default function JobItemContent() {
                     </p>
                   </div>
                   <ul className="reviews__list">
-                    {idApiFetchedData?.reviews.map((data, index) => <li key = {index} className="reviews__item">{data}</li>)}
+                    {data?.reviews.map((data, index) => <li key = {index} className="reviews__item">{data}</li>)}
                     {/*<li className="reviews__item">Nice building and food also.</li>*/}
                     {/*<li className="reviews__item">Great working experience.</li>*/}
                   </ul>

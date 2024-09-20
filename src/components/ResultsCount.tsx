@@ -1,7 +1,7 @@
 import {LoadStore} from "../GeneralStore.tsx/Store.tsx";
 
 export default function ResultsCount() {
-  const counting = LoadStore(state => state.fetchedData.length)
+  const counting = LoadStore(state => state.firstApiDataCount)
   return (
     <p className="count">
       <span className='u-bold'>
