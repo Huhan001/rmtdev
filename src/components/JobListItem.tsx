@@ -18,7 +18,7 @@ export default function JobListItem() {
     return () => {if(debounceTimeOut.current) {clearTimeout(debounceTimeOut.current)}} //clear debounce if there
   },[searchText]); // looks like you can have multiple useEffects in one component.
 
-  const {data, isLoading} = useSWR(debouncedSearch, fetchingData) // fetching data
+  const {data, isLoading} = useSWR(debouncedSearch, fetchingData, {keepPreviousData: true}) // fetching data
 
   LoadStore.setState({firstApiDataCount: data?.length})
   LoadStore.setState({fetchedData: data})

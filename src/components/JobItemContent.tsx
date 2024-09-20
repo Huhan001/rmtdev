@@ -11,11 +11,11 @@ export default function JobItemContent() {
   const fetchedData = LoadStore(state => state.fetchedData)
 
 
-  const {data, isLoading} = useSWR(webJoblistId?`${webDomain}/${webJoblistId}`:null,idApiFetching)
+  const {data, isLoading} = useSWR( fetchedData ?`${webDomain}/${webJoblistId}`:null,idApiFetching)
 
   if(isLoading) {return <SpinnerRun />} // check the html and css to make sure the components conform to the set style.
   return (
-    fetchedData ?
+    !!fetchedData ?
           <section className="job-details">
             <div>
               <img

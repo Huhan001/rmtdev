@@ -5,7 +5,7 @@ export default function ResultsCount() {
   return (
     <p className="count">
       <span className='u-bold'>
-        {counting ? counting : 0}
+        {counting ? counting : "00" }
       </span> {" "}
       results
     </p>
