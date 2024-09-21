@@ -18,10 +18,11 @@ export default function JobListItem() {
     return () => {if(debounceTimeOut.current) {clearTimeout(debounceTimeOut.current)}} //clear debounce if there
   },[searchText]); // looks like you can have multiple useEffects in one component.
 
-  const {data, isLoading} = useSWR(debouncedSearch, fetchingData, {keepPreviousData: true}) // fetching data
+  const {data, isLoading} = useSWR(debouncedSearch, fetchingData, {keepPreviousData: true, revalidateOnFocus: false}) // fetching data
 
-  LoadStore.setState({firstApiDataCount: data?.length})
-  LoadStore.setState({fetchedData: data})
+  LoadStore.setState({firstApiDataCount: data?.length}) // set zustand state out of the store.
+  LoadStore.setState({fetchedData: data}) // set zustand state out of the store.
+  LoadStore.setState({isLoading: isLoading})
 
   //🔥 raising events for weblink tracking.
   useEffect(() =>{
@@ -40,21 +41,21 @@ export default function JobListItem() {
     <>
       {
         !isLoading && Array.isArray(data) && data.slice(0,7).map(response =>
-        <li key={response.id} className={`job-item ${response.id === webJoblistId ? "job-item--active": ""}`}>
-          <a href={`# ${response.id}`} className="job-item__link">
-            <div className="job-item__badge">{response.badgeLetters}</div>
+          <li key={response.id} className={`job-item ${response.id === webJoblistId ? "job-item--active": ""}`}>
+            <a href={`# ${response.id}`} className="job-item__link">
+              <div className="job-item__badge">{response.badgeLetters}</div>
 
-            <div className="job-item__middle">
-              <h3 className="third-heading">{response.title}</h3>
-              <p className="job-item__company">{response.company}</p>
-            </div>
+              <div className="job-item__middle">
+                <h3 className="third-heading">{response.title}</h3>
+                <p className="job-item__company">{response.company}</p>
+              </div>
 
-            <div className="job-item__right">
-              <BookmarkIcon />
-              <time className="job-item__time">{response.daysAgo}d</time>
-            </div>
-          </a>
-        </li>
+              <div className="job-item__right">
+                <BookmarkIcon />
+                <time className="job-item__time">{response.daysAgo}d</time>
+              </div>
+            </a>
+          </li>
         )}
     </>
   );

@@ -33,6 +33,7 @@ interface LoadStoreTypes {
    debouncedSearch: string;
    firstApiDataCount: number;
    fetchedData: ApiData[] | null
+   isLoading: boolean;
 }
 
 export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
