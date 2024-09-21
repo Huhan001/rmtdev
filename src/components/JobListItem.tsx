@@ -20,9 +20,12 @@ export default function JobListItem() {
 
   const {data, isLoading} = useSWR(debouncedSearch, fetchingData, {keepPreviousData: true, revalidateOnFocus: false}) // fetching data
 
-  LoadStore.setState({firstApiDataCount: data?.length}) // set zustand state out of the store.
-  LoadStore.setState({fetchedData: data}) // set zustand state out of the store.
-  LoadStore.setState({isLoading: isLoading})
+//  fixed an error that was happening due to state rerenders.
+  useEffect(() => {
+    LoadStore.setState({firstApiDataCount: data?.length}) // set zustand state out of the store.
+    LoadStore.setState({fetchedData: data}) // set zustand state out of the store.
+    LoadStore.setState({isLoading: isLoading})
+  }, [data, isLoading])
 
   //🔥 raising events for weblink tracking.
   useEffect(() =>{
