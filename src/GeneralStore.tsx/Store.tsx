@@ -35,6 +35,9 @@ interface LoadStoreTypes {
    firstApiDataCount: number;
    fetchedData: ApiData[] | null
    isLoading: boolean;
+   paginationBreak: (word:string) => void;
+   paginationIndex: [a: number, b: number];
+   paginationPage: [a: number, b: number];
 }
 
 export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
@@ -44,6 +47,8 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
     debouncedSearch:"",
     firstApiDataCount: 0,
     fetchedData: null,
+    paginationIndex: [0, 7],
+    paginationPage: [1,2],
     setSearchText: (event:React.ChangeEvent<HTMLInputElement>) => set({searchText: event.target.value}),
     fetchingData: async (search:string) => {
         if (!get().searchText) return; //kills application 🔥
@@ -64,6 +69,11 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
             const data = await fetch(url);
             const response =  await data.json();
         return response.jobItem
-    }
-
+    },
+    paginationBreak: (word: string) => set((state) => {
+        if(word === 'increase') {
+            return {paginationIndex: [state.paginationIndex[0] + 7, state.paginationIndex[1] + 7], paginationPage: [state.paginationPage[0] + 1, state.paginationPage[1] + 1]} }
+        else {
+             return {paginationIndex: [state.paginationIndex[0] - 7, state.paginationIndex[1] - 7], paginationPage: [state.paginationPage[0] - 1, state.paginationPage[1] -1]} }
+    })
 }));
