@@ -10,22 +10,23 @@ export default function JobListItem() {
   const debouncedSearch = LoadStore(state => state.debouncedSearch)
   const getwebJoblistId = LoadStore(state => state.getwebJoblistId)
   const webJoblistId = LoadStore(state => state.webJoblistId)
+  const paginationIndex = LoadStore(state => state.paginationIndex)
 
   const debounceTimeOut = useRef<number | null>(null) // 👇🏾
 
   useEffect(() => {
-    debounceTimeOut.current = setTimeout(() => LoadStore.setState({debouncedSearch: searchText}),600) // 600 milisecond
+    debounceTimeOut.current = setTimeout(() => LoadStore.setState({debouncedSearch: searchText}),550) // 600 milisecond
     return () => {if(debounceTimeOut.current) {clearTimeout(debounceTimeOut.current)}} //clear debounce if there
   },[searchText]); // looks like you can have multiple useEffects in one component.
 
   const {data, isLoading} = useSWR(debouncedSearch, fetchingData, {keepPreviousData: true, revalidateOnFocus: false}) // fetching data
 
-//  fixed an error that was happening due to state rerenders.
   useEffect(() => {
     LoadStore.setState({firstApiDataCount: data?.length}) // set zustand state out of the store.
     LoadStore.setState({fetchedData: data}) // set zustand state out of the store.
     LoadStore.setState({isLoading: isLoading})
   }, [data, isLoading])
+
 
   //🔥 raising events for weblink tracking.
   useEffect(() =>{
@@ -43,7 +44,7 @@ export default function JobListItem() {
 
     <>
       {
-        !isLoading && Array.isArray(data) && data.slice(0,7).map(response =>
+        !isLoading && Array.isArray(data) && data.slice(paginationIndex[0],paginationIndex[1]).map(response =>
           <li key={response.id} className={`job-item ${response.id === webJoblistId ? "job-item--active": ""}`}>
             <a href={`# ${response.id}`} className="job-item__link">
               <div className="job-item__badge">{response.badgeLetters}</div>
