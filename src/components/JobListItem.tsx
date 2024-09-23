@@ -14,18 +14,18 @@ export default function JobListItem() {
   const debounceTimeOut = useRef<number | null>(null) // 👇🏾
 
   useEffect(() => {
-    debounceTimeOut.current = setTimeout(() => LoadStore.setState({debouncedSearch: searchText}),600) // 600 milisecond
+    debounceTimeOut.current = setTimeout(() => LoadStore.setState({debouncedSearch: searchText}),550) // 600 milisecond
     return () => {if(debounceTimeOut.current) {clearTimeout(debounceTimeOut.current)}} //clear debounce if there
   },[searchText]); // looks like you can have multiple useEffects in one component.
 
   const {data, isLoading} = useSWR(debouncedSearch, fetchingData, {keepPreviousData: true, revalidateOnFocus: false}) // fetching data
 
-//  fixed an error that was happening due to state rerenders.
   useEffect(() => {
     LoadStore.setState({firstApiDataCount: data?.length}) // set zustand state out of the store.
     LoadStore.setState({fetchedData: data}) // set zustand state out of the store.
     LoadStore.setState({isLoading: isLoading})
   }, [data, isLoading])
+
 
   //🔥 raising events for weblink tracking.
   useEffect(() =>{
