@@ -71,7 +71,7 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
         return response.jobItem
     },
     paginationBreak: (word: string) => set((state) => {
-        if(word === 'increase') {
+        if(word === 'next') {
             return {paginationIndex: [state.paginationIndex[0] + 7, state.paginationIndex[1] + 7], paginationPage: [state.paginationPage[0] + 1, state.paginationPage[1] + 1]} }
         else {
              return {paginationIndex: [state.paginationIndex[0] - 7, state.paginationIndex[1] - 7], paginationPage: [state.paginationPage[0] - 1, state.paginationPage[1] -1]} }
