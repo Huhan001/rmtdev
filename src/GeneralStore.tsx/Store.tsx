@@ -38,6 +38,8 @@ interface LoadStoreTypes {
    paginationBreak: (word:string) => void;
    paginationIndex: [a: number, b: number];
    paginationPage: [a: number, b: number];
+   sortByRelevance: () => void;
+   sortByRecent: () => void
 }
 
 export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
@@ -75,5 +77,7 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
             return {paginationIndex: [state.paginationIndex[0] + 7, state.paginationIndex[1] + 7], paginationPage: [state.paginationPage[0] + 1, state.paginationPage[1] + 1]} }
         else {
              return {paginationIndex: [state.paginationIndex[0] - 7, state.paginationIndex[1] - 7], paginationPage: [state.paginationPage[0] - 1, state.paginationPage[1] -1]} }
-    })
+    }),
+    sortByRelevance: () => { !!get().fetchedData && console.log(get().fetchedData?.sort((a, b) => a.relevanceScore - b.relevanceScore))},
+    sortByRecent: () => { !!get().fetchedData && console.log(get().fetchedData?.sort((a, b) => a.daysAgo - b.daysAgo))}
 }));

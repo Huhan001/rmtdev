@@ -11,7 +11,7 @@ export default function PaginationControls() {
 
   return (
     <section className="pagination">
-        {paginationIndex[0] > 0 && <button disabled={paginationIndex[0] <= 0} onClick={() => paginate("sfdf")} className= 'pagination__button pagination__button--back'>
+        {paginationIndex[0] > 0 && <button disabled={paginationIndex[0] <= 0} onClick={() => paginate("back")} className= 'pagination__button pagination__button--back'>
             <ArrowLeftIcon/> Page {paginationPage[0]}
         </button>}
         {paginationIndex[1] < fetchedData?.length && <button disabled={paginationIndex[1] > fetchedData?.length} onClick={() => paginate("next")}
