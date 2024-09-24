@@ -11,7 +11,7 @@ export default function JobListItem() {
   const getwebJoblistId = LoadStore(state => state.getwebJoblistId)
   const webJoblistId = LoadStore(state => state.webJoblistId)
   const paginationIndex = LoadStore(state => state.paginationIndex)
-  const fetchedData = LoadStore(state => state.fetchedData)
+  const SortedfetchedData = LoadStore(state => state.SortedfetchedData)
 
   const debounceTimeOut = useRef<number | null>(null) // 👇🏾
 
@@ -46,7 +46,7 @@ export default function JobListItem() {
 
     <>
       {
-        !isLoading && Array.isArray(data) && fetchedData?.slice(paginationIndex[0],paginationIndex[1]).map(response =>
+        !isLoading && Array.isArray(data) && (SortedfetchedData || data)?.slice(paginationIndex[0],paginationIndex[1]).map(response =>
           <li key={response.id} className={`job-item ${response.id === webJoblistId ? "job-item--active": ""}`}>
             <a href={`# ${response.id}`} className="job-item__link">
               <div className="job-item__badge">{response.badgeLetters}</div>

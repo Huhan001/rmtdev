@@ -40,6 +40,8 @@ interface LoadStoreTypes {
    paginationPage: [a: number, b: number];
    sortByRelevance: () => void;
    sortByRecent: () => void
+   SortedfetchedData: ApiData[] | null
+   sortActive: string;
 }
 
 export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
@@ -49,8 +51,10 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
     debouncedSearch:"",
     firstApiDataCount: 0,
     fetchedData: null,
+    SortedfetchedData: null,
     paginationIndex: [0, 7],
     paginationPage: [1,2],
+    sortActive:"",
     setSearchText: (event:React.ChangeEvent<HTMLInputElement>) => set({searchText: event.target.value}),
     fetchingData: async (search:string) => {
         if (!get().searchText) return; //kills application 🔥
@@ -78,6 +82,6 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
         else {
              return {paginationIndex: [state.paginationIndex[0] - 7, state.paginationIndex[1] - 7], paginationPage: [state.paginationPage[0] - 1, state.paginationPage[1] -1]} }
     }),
-    sortByRelevance: () => { !!get().fetchedData && console.log(get().fetchedData?.sort((a, b) => a.relevanceScore - b.relevanceScore))},
-    sortByRecent: () => { !!get().fetchedData && console.log(get().fetchedData?.sort((a, b) => a.daysAgo - b.daysAgo))}
+    sortByRelevance: () => { !!get().fetchedData && set({sortActive:'relevant', SortedfetchedData: [...get().fetchedData].sort((a, b) => a.relevanceScore - b.relevanceScore)}) },
+    sortByRecent: () => { !!get().fetchedData && set({sortActive: 'recent', SortedfetchedData: [...get().fetchedData].sort((a, b) => a.daysAgo - b.daysAgo)}) }
 }));
