@@ -23,6 +23,11 @@ export interface IdFetch extends ApiData {
     companyURL: string
 }
 
+interface recordedID {
+    bookmark: boolean;
+    id:number
+}
+
 // 📌 like protocal oriented programing
 interface LoadStoreTypes {
    searchText: string;
@@ -42,6 +47,8 @@ interface LoadStoreTypes {
    sortByRecent: () => void
    SortedfetchedData: ApiData[] | null
    sortActive: string;
+   setbookMarkClick: (id: number) => void;
+   recordedIDs:recordedID[];
 }
 
 export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
@@ -55,6 +62,7 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
     paginationIndex: [0, 7],
     paginationPage: [1,2],
     sortActive:"",
+    recordedIDs: [],
     setSearchText: (event:React.ChangeEvent<HTMLInputElement>) => set({searchText: event.target.value}),
     fetchingData: async (search:string) => {
         if (!get().searchText) return; //kills application 🔥
@@ -83,5 +91,14 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
              return {paginationIndex: [state.paginationIndex[0] - 7, state.paginationIndex[1] - 7], paginationPage: [state.paginationPage[0] - 1, state.paginationPage[1] -1]} }
     }),
     sortByRelevance: () => { !!get().fetchedData && set({sortActive:'relevant', SortedfetchedData: [...get().fetchedData].sort((a, b) => a.relevanceScore - b.relevanceScore)}) },
-    sortByRecent: () => { !!get().fetchedData && set({sortActive: 'recent', SortedfetchedData: [...get().fetchedData].sort((a, b) => a.daysAgo - b.daysAgo)}) }
+    sortByRecent: () => { !!get().fetchedData && set({sortActive: 'recent', SortedfetchedData: [...get().fetchedData].sort((a, b) => a.daysAgo - b.daysAgo)}) },
+    setbookMarkClick: (id:number) => {
+        const bookmarked:boolean = false;
+        const bookmarks: recordedID = {bookmark: !bookmarked, id: id};
+
+        get().recordedIDs.find(data => (data.id === id)) ?
+            set((state) => ({recordedIDs: state.recordedIDs.
+                map(data => data.id === id ? {...data, bookmark: !data.bookmark} : data) })) :
+            set((state)  => ({recordedIDs: [...state.recordedIDs, bookmarks]}))
+    },
 }));
