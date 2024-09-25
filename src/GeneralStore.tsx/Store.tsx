@@ -23,6 +23,11 @@ export interface IdFetch extends ApiData {
     companyURL: string
 }
 
+interface recordedID {
+    bookmark: boolean;
+    id:number
+}
+
 // 📌 like protocal oriented programing
 interface LoadStoreTypes {
    searchText: string;
@@ -38,6 +43,12 @@ interface LoadStoreTypes {
    paginationBreak: (word:string) => void;
    paginationIndex: [a: number, b: number];
    paginationPage: [a: number, b: number];
+   sortByRelevance: () => void;
+   sortByRecent: () => void
+   SortedfetchedData: ApiData[] | null
+   sortActive: string;
+   setbookMarkClick: (id: number) => void;
+   recordedIDs:recordedID[];
 }
 
 export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
@@ -47,8 +58,11 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
     debouncedSearch:"",
     firstApiDataCount: 0,
     fetchedData: null,
+    SortedfetchedData: null,
     paginationIndex: [0, 7],
     paginationPage: [1,2],
+    sortActive:"",
+    recordedIDs: [],
     setSearchText: (event:React.ChangeEvent<HTMLInputElement>) => set({searchText: event.target.value}),
     fetchingData: async (search:string) => {
         if (!get().searchText) return; //kills application 🔥
@@ -71,9 +85,20 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
         return response.jobItem
     },
     paginationBreak: (word: string) => set((state) => {
-        if(word === 'increase') {
+        if(word === 'next') {
             return {paginationIndex: [state.paginationIndex[0] + 7, state.paginationIndex[1] + 7], paginationPage: [state.paginationPage[0] + 1, state.paginationPage[1] + 1]} }
         else {
              return {paginationIndex: [state.paginationIndex[0] - 7, state.paginationIndex[1] - 7], paginationPage: [state.paginationPage[0] - 1, state.paginationPage[1] -1]} }
-    })
+    }),
+    sortByRelevance: () => { !!get().fetchedData && set({sortActive:'relevant', SortedfetchedData: [...get().fetchedData].sort((a, b) => a.relevanceScore - b.relevanceScore)}) },
+    sortByRecent: () => { !!get().fetchedData && set({sortActive: 'recent', SortedfetchedData: [...get().fetchedData].sort((a, b) => a.daysAgo - b.daysAgo)}) },
+    setbookMarkClick: (id:number) => {
+        const bookmarked:boolean = false;
+        const bookmarks: recordedID = {bookmark: !bookmarked, id: id};
+
+        get().recordedIDs.find(data => (data.id === id)) ?
+            set((state) => ({recordedIDs: state.recordedIDs.
+                map(data => data.id === id ? {...data, bookmark: !data.bookmark} : data) })) :
+            set((state)  => ({recordedIDs: [...state.recordedIDs, bookmarks]}))
+    },
 }));

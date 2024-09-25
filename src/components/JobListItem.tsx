@@ -11,6 +11,7 @@ export default function JobListItem() {
   const getwebJoblistId = LoadStore(state => state.getwebJoblistId)
   const webJoblistId = LoadStore(state => state.webJoblistId)
   const paginationIndex = LoadStore(state => state.paginationIndex)
+  const SortedfetchedData = LoadStore(state => state.SortedfetchedData)
 
   const debounceTimeOut = useRef<number | null>(null) // 👇🏾
 
@@ -35,6 +36,7 @@ export default function JobListItem() {
     return () => window.removeEventListener('hashchange', getwebJoblistId)} // removing it from the event, cleaning up event.
     ,[getwebJoblistId])
 
+
   if(isLoading) return <Spinner />
 
   return (
@@ -44,7 +46,7 @@ export default function JobListItem() {
 
     <>
       {
-        !isLoading && Array.isArray(data) && data.slice(paginationIndex[0],paginationIndex[1]).map(response =>
+        !isLoading && Array.isArray(data) && (SortedfetchedData || data)?.slice(paginationIndex[0],paginationIndex[1]).map(response =>
           <li key={response.id} className={`job-item ${response.id === webJoblistId ? "job-item--active": ""}`}>
             <a href={`# ${response.id}`} className="job-item__link">
               <div className="job-item__badge">{response.badgeLetters}</div>
@@ -55,7 +57,7 @@ export default function JobListItem() {
               </div>
 
               <div className="job-item__right">
-                <BookmarkIcon />
+                <BookmarkIcon response ={response.id}/>
                 <time className="job-item__time">{response.daysAgo}d</time>
               </div>
             </a>

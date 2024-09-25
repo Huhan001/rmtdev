@@ -1,9 +1,13 @@
 import { BookmarkFilledIcon } from "@radix-ui/react-icons";
+import {LoadStore} from "../GeneralStore.tsx/Store.tsx";
 
-export default function BookmarkIcon() {
+export default function BookmarkIcon({response}: {response: number}) {
+  const setBookmark = LoadStore(state => state.setbookMarkClick)
+  const recordedIDs = LoadStore(state => state.recordedIDs)
+
   return (
-    <button className="bookmark-btn">
-      <BookmarkFilledIcon className="filled" />
-    </button>
+          <button onClick={() => setBookmark(response)} className="bookmark-btn">
+            <BookmarkFilledIcon className={`${recordedIDs.find(data => data.id === response && data.bookmark) ? "filled": ""}`} />
+          </button>
   );
 }
