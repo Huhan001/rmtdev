@@ -57,7 +57,7 @@ export default function JobListItem() {
               </div>
 
               <div className="job-item__right">
-                <BookmarkIcon response ={response.id}/>
+                <BookmarkIcon />
                 <time className="job-item__time">{response.daysAgo}d</time>
               </div>
             </a>
