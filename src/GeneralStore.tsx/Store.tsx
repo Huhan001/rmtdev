@@ -1,4 +1,5 @@
 import {create} from "zustand";
+import { persist, createJSONStorage} from 'zustand/middleware'
 import React from "react";
 import {webDomain} from "../constant/sharedConstant";
 import toast from "react-hot-toast";
@@ -49,9 +50,11 @@ interface LoadStoreTypes {
    sortActive: string;
    setbookMarkClick: (id: number) => void;
    recordedIDs:recordedID[];
+   openPopUp: boolean;
+   setopenPopUp: () => void;
 }
 
-export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
+export const LoadStore = create<LoadStoreTypes>()(persist((set, get) => ({
     searchText: '',
     isLoading: false,
     webJoblistId: 0,
@@ -63,6 +66,7 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
     paginationPage: [1,2],
     sortActive:"",
     recordedIDs: [],
+    openPopUp: false,
     setSearchText: (event:React.ChangeEvent<HTMLInputElement>) => set({searchText: event.target.value}),
     fetchingData: async (search:string) => {
         if (!get().searchText) return; //kills application 🔥
@@ -100,5 +104,13 @@ export const LoadStore = create<LoadStoreTypes>()((set, get) => ({
             set((state) => ({recordedIDs: state.recordedIDs.
                 map(data => data.id === id ? {...data, bookmark: !data.bookmark} : data) })) :
             set((state)  => ({recordedIDs: [...state.recordedIDs, bookmarks]}))
+        set({recordedIDs:  get().recordedIDs.filter(data => data.bookmark)}) //last filter
     },
-}));
+    setopenPopUp: () => set((state) => ({openPopUp: !state.openPopUp})),
+}),{
+            storage: createJSONStorage(() => localStorage),
+            name: 'bookmarks',
+            partialize: (state) => ({recordedIDs: state.recordedIDs})
+        }
+    )
+);
