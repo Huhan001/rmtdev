@@ -8,7 +8,6 @@ import {webDomain} from "../constant/sharedConstant.tsx";
 export default function JobItemContent() {
   const webJoblistId = LoadStore(state => state.webJoblistId)
   const idApiFetching = LoadStore(state => state.idApiFetching)
-  const fetchedData = LoadStore(state => state.fetchedData)
 
 
   const {data, isLoading} = useSWR( webJoblistId ?`${webDomain}/${webJoblistId}`:null,idApiFetching,
@@ -16,7 +15,7 @@ export default function JobItemContent() {
 
   if(isLoading) {return <SpinnerRun />} // check the html and css to make sure the components conform to the set style.
   return (
-    !!fetchedData && webJoblistId ?
+    webJoblistId ?
           <section className="job-details">
             <div>
               <img
@@ -126,7 +125,7 @@ function EmptyJobContent() {
 }
 
 
-const SpinnerRun = () => {
+export const SpinnerRun = () => {
   return (
     <section className= 'job-details'>
       <div>

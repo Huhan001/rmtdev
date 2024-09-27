@@ -52,6 +52,7 @@ interface LoadStoreTypes {
    recordedIDs:recordedID[];
    openPopUp: boolean;
    setopenPopUp: () => void;
+   getRecordedID: (units: number[]) => Promise<ApiData[]>;
 }
 
 export const LoadStore = create<LoadStoreTypes>()(persist((set, get) => ({
@@ -107,6 +108,19 @@ export const LoadStore = create<LoadStoreTypes>()(persist((set, get) => ({
         set({recordedIDs:  get().recordedIDs.filter(data => data.bookmark)}) //last filter
     },
     setopenPopUp: () => set((state) => ({openPopUp: !state.openPopUp})),
+    getRecordedID: async (units:number[]):Promise<ApiData[]> => {
+
+        const response = await Promise.all(units.map(unit => fetch(`${webDomain}/${unit}`)))
+
+//        checking for an error ❌
+        if (response.filter(response => !response.ok).length > 0) {
+            const error = await Promise.all(response.map(response => response.json()));
+            error.forEach(error => toast.error(error))
+        }
+
+        const data = await Promise.all(response.map(response => response.json()))
+        return data.map(data => data.jobItem)
+    }
 }),{
             storage: createJSONStorage(() => localStorage),
             name: 'bookmarks',
