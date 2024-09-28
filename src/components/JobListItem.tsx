@@ -2,7 +2,6 @@ import BookmarkIcon from "./BookmarkIcon";
 import {useEffect, useRef} from "react";
 import {LoadStore} from "../GeneralStore.tsx/Store.tsx";
 import useSWR from "swr";
-import Spinner from "./Spinner.tsx";
 
 export default function JobListItem() {
   const searchText = LoadStore(state => state.searchText);
@@ -37,7 +36,7 @@ export default function JobListItem() {
     ,[getwebJoblistId])
 
 
-  if(isLoading) return <Spinner />
+//  if(isLoading) return <Spinner /> redundant spinnner
 
   return (
 //    to post the id or address on the search bar, include an id href={`# ${data.id}`}

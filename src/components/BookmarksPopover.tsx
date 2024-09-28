@@ -2,6 +2,7 @@ import {LoadStore} from "../GeneralStore.tsx/Store.tsx";
 import BookmarkIcon from "./BookmarkIcon";
 import useSWR from "swr";
 import {SpinnerRun} from "./JobItemContent.tsx";
+import {createPortal} from "react-dom";
 
 
 export default function BookmarksPopover() {
@@ -14,7 +15,8 @@ export default function BookmarksPopover() {
     {revalidateIfStale: true, revalidateOnReconnect: true, keepPreviousData: true, revalidateOnFocus: true})
 
 
-    return (
+//  directs where to place a div in the occurence that a div runs ontop of the other div
+    return createPortal(
         <div className="bookmarks-popover">
           {isLoading && <SpinnerRun />}
           {
@@ -37,7 +39,7 @@ export default function BookmarksPopover() {
                 </li>
               </ul>)
           }
-    </div>
+    </div>, document.body
   );
 }
 
